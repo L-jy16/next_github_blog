@@ -63,3 +63,5 @@ Ok to proceed? (y) y
         with:
           path: ./dist
 ```
+8. git에 올리고 github 페이지로 가서 확인하기 build가 되었는 지 확인 하기
+((이미지) L-jy16 2024.01.17 [표시되는 곳] 표시되는 곳을 동그라미가 있을 텐데 동그라미를 클릭하고 detail을 클릭하면 build하는 과정을 볼 수 있다.)

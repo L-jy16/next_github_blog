@@ -84,4 +84,61 @@ const nextConfig = {
 module.exports = nextConfig
 ```
 11. `npm run build`하고 난 후에 `npx serve ./dist`하고 로컬 확인
-12. 이미지 불러오기
+12. _post 폴더 안에 있는 파일들 보기
+13. 이미지 경로 앞에 ${basePath} 붙여넣기 ex> `coverImage: "${basePath}/assets/blog/dynamic-routing/cover.jpg"`
+14. lib 폴더 안에 api.ts 파일 수정하기
+```js
+import fs from "fs";
+import { join } from "path";
+import matter from "gray-matter";
+
+const config = require('../next.config');   // 추가한 내용
+const postsDirectory = join(process.cwd(), "_posts");
+
+export function getPostSlugs() {
+  return fs.readdirSync(postsDirectory);
+}
+
+export function getPostBySlug(slug: string, fields: string[] = []) {
+  const realSlug = slug.replace(/\.md$/, "");
+  const fullPath = join(postsDirectory, `${realSlug}.md`);
+  const fileContents = fs.readFileSync(fullPath, "utf8");
+  const { data, content } = matter(fileContents);
+
+  type Items = {
+    [key: string]: string;
+  };
+
+  let items: Items = {};
+
+  // Ensure only the minimal needed data is exposed
+  fields.forEach((field) => {
+    if (field === "slug") {
+      items[field] = realSlug;
+    }
+    if (field === "content") {
+      items[field] = content;
+    }
+
+    if (typeof data[field] !== "undefined") {
+      items[field] = data[field];
+    }
+  });
+
+  // Replace image(추가한 내용)
+  let itemStr = JSON.stringify(items);
+  itemStr = itemStr.replaceAll(/\$\{basePath\}/gi, config.basePath);
+  items = JSON.parse(itemStr)
+
+  return items;
+}
+
+export function getAllPosts(fields: string[] = []) {
+  const slugs = getPostSlugs();
+  const posts = slugs
+    .map((slug) => getPostBySlug(slug, fields))
+    // sort posts by date in descending order
+    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
+  return posts;
+}
+```

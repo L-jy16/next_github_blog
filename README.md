@@ -40,5 +40,26 @@ Ok to proceed? (y) y
 ```
 ## github 연동
 
-1. github에 폴더 만들기
-2. 
+1. github에 README.md 파일 없이 폴더 만들기
+2. .gitignore에 "/dist/" 아래처럼 추가하기
+```js
+# next.js
+/.next/
+/out/
+/dist/
+```
+3. github와 연동하여 파일이 올라왔는 지 확인
+4. 해당 폴더의 github의 setting -> pages -> Build and deployment에 Source를 `GitHub Actions` 으로 변경하기
+5. 변경 후 시간이 지나면 Next.js 박스 카드가 생기는데 거기의 Configure 버튼 클릭 후 파일이 생성 되면 저장 후 VScode로 돌아와서 `git pull` 해주기
+6. .github 폴더에 nextjs.yml 파일에 job부분의 아랫 부분 쪽을 보면 아래와 같은 게 있는데 저 부분은 중복이므로 삭제
+```js
+- name: Static HTML export with Next.js
+        run: ${{ steps.detect-package-manager.outputs.runner }} next export 
+```
+7. .github 폴더에 nextjs.yml 파일에 job부분의 아랫 부분 쪽을 보면 아래와 같은 게 있는데 아래와 같이 수정해 주기
+```js
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+```

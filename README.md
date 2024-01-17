@@ -65,3 +65,23 @@ Ok to proceed? (y) y
 ```
 8. git에 올리고 github 페이지로 가서 확인하기 build가 되었는 지 확인 하기
 ((이미지) L-jy16 2024.01.17 [표시되는 곳] 표시되는 곳을 동그라미가 있을 텐데 동그라미를 클릭하고 detail을 클릭하면 build하는 과정을 볼 수 있다.)
+9. github -> setting -> page 가면 사이트 주소가 있는데 그것이 나의 블로그 주소이다.
+10. 다시 VScode로 돌아와서 next.config.js 파일을 아래와 같이 수정
+```js
+/**
+ * @type {import('next').NextConfig}
+ */
+const isProd = process.env.NODE_ENV = 'production'
+const nextConfig = {
+    basePath: isProd ? '/next_github_blog' : '',
+    output: 'export',
+    distDir: 'dist',
+    images: {
+        unoptimized: true,
+    }
+}
+
+module.exports = nextConfig
+```
+11. `npm run build`하고 난 후에 `npx serve ./dist`하고 로컬 확인
+12. 이미지 불러오기
